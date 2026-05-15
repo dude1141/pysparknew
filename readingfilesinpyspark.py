@@ -10,6 +10,8 @@ class readingfilesinpyspark :
 
     def __init__(self):
 
+        #self.a is stored in global variable
+        #if we are doing a=b its local variable
         self.spark= SparkSession.builder \
             .appName("test") \
             .master("local[*]") \
