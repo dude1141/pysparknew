@@ -21,10 +21,13 @@ class readingfilesinpyspark :
                                   StructField("City", StringType()
                                               )])
 
-    def main(self):
-        data = r"C:\Users\mouni\Downloads\details-2026-04-05.csv"
+        #self.schema! and self.spark are isntance variables and can be accessed any where in spark
 
+    def main(self):
         try:
+            data = r"C:\Users\mouni\Downloads\details-2026-04-051.csv"
+
+
             df = self.spark.read.format("csv") \
               .option("header", True) \
               .option("MODE", "DROPMALFORMED") \
