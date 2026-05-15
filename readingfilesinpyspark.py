@@ -21,7 +21,7 @@ class readingfilesinpyspark :
                                   StructField("City", StringType()
                                               )])
 
-        #self.schema! and self.spark are isntance variables and can be accessed any where in spark
+        #self.schema! and self.spark are isntance variables and can be accessed any where in methods and including main
 
     def main(self):
         try:
