@@ -40,3 +40,4 @@ git remote -v
 ## Project Files
 - `readingfilesinpyspark.py` - Main PySpark script
 - `Pysparknotes_2026.pdf` - PySpark notes and documentation
+- [DIAGRAM.md](DIAGRAM.md) - Project diagram (view & download via Excalidraw)
