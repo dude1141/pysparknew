@@ -29,7 +29,7 @@ df3= spark.createDataFrame(transactions,schema)
 try:
     def functions(df):
         return df.withColumn("Category",when(col("amount") > 1000, "High")
-                    .when((col("amount") > 500) & (col("amount") < 1000), "Medium")
+                    .when((col("amount") > 500) & (col("amount") <= 1000), "Medium")
                     .otherwise("Low"))
 
 
@@ -47,7 +47,7 @@ finally:
 --------------+------+--------+
 |transactionsid|amount|Category|
 +--------------+------+--------+
-|             1|  1000|     Low|
+|             1|  1000|  Medium|
 |             2|   200|     Low|
 |             3|  5000|    High|
 +--------------+------+--------+
