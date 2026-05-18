@@ -1,3 +1,7 @@
+Apple Analysis project reference:
+https://www.youtube.com/watch?v=BlWS4foN9cY
+
+
 # PySpark Project
 
 A Python project for learning and working with Apache Spark.
