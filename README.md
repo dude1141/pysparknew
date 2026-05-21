@@ -64,3 +64,22 @@ step1df = ( flight_time_raw_df.withColumns({
    `from pyspark.sql.functions import expr`
     `return expr(f"""cast(concat(left(lpad(cast(hhmm_value AS STRING), 4, '0'),2), ':',`
    `left(lpad(cast(hhmm_value AS STRING), 4, '0'),2) AS INTERVAL HOUR TO MINUTE) """)`
+
+## casting using try cast and handling nil 
+
+    - `transaction_id	customer_name	dop	purchase_amount	discount`
+    - '100	Prashant	2020-06-15	12000	18.5`
+    - `101	David	2018-08-7	15000	nil`
+    - `102	Simran	14-05-2019	3000000000	21`
+
+- `try cast is use for eg 18.5 we can cast to double, for nil it will fail so we use try_cast`
+- `here try cast converting nil it will return instead of null and top of that we apply nvl`
+- `converting nil and null values to zero`
+```bash
+ -` df3 = df3.selectExpr("customer_name",
+                     "nvl(try_cast(dop as date), to_date(dop,'dd-MM-yyyy')) as date_of_purchase",
+                     "nvl(try_cast(discount as double),0) as applied_discount",
+                     "purchase_amount",
+                     "transaction_id").filter("purchase_amount is not null")
+-` display(df3) -`
+```bash
