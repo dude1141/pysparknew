@@ -61,9 +61,9 @@ step1df = ( flight_time_raw_df.withColumns({
     })
   `
 - `def getinterval(hhmm_value): `
-   `from pyspark.sql.functions import expr`
-    `return expr(f"""cast(concat(left(lpad(cast(hhmm_value AS STRING), 4, '0'),2), ':',`
-   `left(lpad(cast(hhmm_value AS STRING), 4, '0'),2) AS INTERVAL HOUR TO MINUTE) """)`
+  - `from pyspark.sql.functions import expr`
+   - `return expr(f"""cast(concat(left(lpad(cast(hhmm_value AS STRING), 4, '0'),2), ':',`
+   - `left(lpad(cast(hhmm_value AS STRING), 4, '0'),2) AS INTERVAL HOUR TO MINUTE) """)`
 
 ## casting using try cast and handling nil 
 
