@@ -81,5 +81,7 @@ step1df = ( flight_time_raw_df.withColumns({
                      "nvl(try_cast(discount as double),0) as applied_discount",
                      "purchase_amount",
                      "transaction_id").filter("purchase_amount is not null")
--` display(df3) -`
 ```bash
+
+## case when
+  - ` df3 = df3.selectExpr("increment", expr(" case when salary > 300000 then 3000 else salary* 10/100 end").withCoumn("salary", expr("increment+salary"))`   
