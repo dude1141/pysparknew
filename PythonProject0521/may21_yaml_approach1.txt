@@ -1,0 +1,245 @@
+
+config :
+-----------
+1. dictionary 
+
+2. map  --------------------------mid ranage ---small--medium scale
+
+
+          
+		             YAML APPROACH :
+					 -----------
+					 hughe enterprise level data :
+					 
+sample code for reference https://github.com/quelltest/quelltest-lib/tree/15ce5991a222365fce64fa31b0553c86225b8a47
+
+below is our new project structure
+project/
+│
+├── config/
+│     ├── dev.yaml
+│     ├── prod.yaml
+│
+├── src/
+│     ├── main.py
+│     ├── reader.py
+│     ├── transformer.py
+│     ├── writer.py
+│     ├── utils.py
+│
+├── data/
+│     ├── customer.csv
+│
+└── logs/
+
+
+customer_id,name,city,salary
+101,karthik,hyderabad,50000
+102,ravi,chennai,60000
+103,anil,bangalore,55000
+103,anil,bangalore,55000
+104,sai,hyderabad,70000
+
+
+dev.yaml :
+------------
+
+ pipeline:
+   name:customer_etl
+   environment:dev 
+   
+ Source:
+   file_path:/data/customers.csv
+   format:csv 
+   header:true
+   inferschema:true
+   
+ Transformations:
+    drop_duplicates:true
+	
+	uppercase_columns:
+	   -city 
+	   -name
+	   
+	filter_condition:
+	   salary:5000
+
+  Target:
+   output_path:output/may21op
+   format:parquet
+   header:true
+   mode:overWrite
+   
+   spark_config:
+     spark.sql.shuufle.partitions:4
+	 
+	logging:
+	  log_level:INFO
+	  
+	  
+
+utils.py 
+----------
+import yaml 
+
+  path=config/dev.yaml
+ def load_config(path):
+    
+	with open(path,"r") as file:
+	   config=yaml.safe_load(file)
+	   
+	   return config 
+	   
+
+
+reader.py :
+------------
+
+ def read_data(spark,config):
+ 
+   try :
+   
+     df=spark.read
+	 .format(config["source"]["format"])
+	 .option("header",config["source"]["header"])
+	 .option("inferschema",config["source"]["inferschema"])
+	 .option("path",config["source"]["file_path"])
+	 .load()
+	 
+	 print("data loaded successfully")
+	 
+	 return df 
+	 
+	except Exception e:
+	
+	  print(" Error in Reading Data")
+	  
+	  print(e)
+	  
+
+	 
+Transformer.py :
+-----------------
+
+ def drop_duplicates(df,config):
+ 
+    if(config["transformation"]["drop_duplicates"]):
+        df1=df.dropduplicates()
+		
+		return df1
+	 
+
+
+def upper_case_columns(df,config):
+  
+    cols=config["transformation"]["uppercase_columns"]
+	
+	for c in cols:
+	   df2=df.withColumn(
+	      c,upper(col(c))
+		)
+		
+	 return df2
+	 
+
+def filter_Salary(df,config):
+
+   slary_value=config["Transformation"]["Filter_condition"]["salary"]
+   
+   df3=df.filter(col("salary")>slary_value)
+   
+   return df3.
+   
+   
+ def transform_data(df,config):
+ 
+  try:
+  
+    drop_duplicates(df,config)
+	upper_case_columns(df,config)
+	filter_Salary(df,config)
+
+ except Exception e:
+	
+	  print(" Error in Transformation")
+	  
+	  print(e)
+
+	
+	
+   
+
+
+writer.py
+------------
+def write_data(spark,config):
+ 
+   try :
+   
+      spark.write
+	 .format(config["target"]["format"])
+	 .option("header",config["target"]["header"])
+	 .mode(Save.(config["target"]["mode"])
+	 .option("path",config["target"]["output_path"])
+	 .save()
+	 
+	 print("data written to sink successfully")
+	 
+	 
+	except Exception e:
+	
+	  print(" Error in Writing the  Data")
+	  
+	  print(e)
+	  
+
+main.py 
+---------
+
+from pyspark.sql import sparksession 
+
+from utils import load_config 
+from reader import read_data
+from transfromer import transform_data
+from writer import write_data 
+
+
+try :
+
+  spark=SparkSesion.Builder()
+        .appName("customerETL")
+		.getOrCreate()
+		
+	
+
+ loading the yaml conifg file:
+ -------------------------------
+ 
+ config=load_config("config/dev.yaml")
+ 
+ Read_data:
+ -------------
+ 
+  read_data(spark,config)
+  
+  
+ transfrom_data:
+ -------------
+  transform_data(spark,config)
+  
+ writer_data
+ ----------------
+ write_data(spark,config)
+ 
+ print(" pipeline successfully executed")
+ 
+ except exception e:
+ 
+   print("pipeline failed")
+   
+   print(e)
+   
+  finally:
+   spark.stop()
+ 
+ 

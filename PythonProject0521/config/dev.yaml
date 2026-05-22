@@ -1,0 +1,29 @@
+pipeline:
+  name: customer_etl
+  environment: dev
+
+source:
+  file_path: data/customer.csv
+  format: csv
+  header: true
+  inferSchema: true
+
+transformations:
+  drop_duplicates: true
+  uppercase_columns:
+    - city
+    - name
+  filter_condition:
+    salary: 50000
+
+target:
+  output_path: output/customer_dev
+  format: parquet
+  header: true
+  mode: overwrite
+
+spark_config:
+  spark.sql.shuffle.partitions: 4
+
+logging:
+  log_level: INFO
