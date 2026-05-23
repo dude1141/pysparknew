@@ -95,8 +95,7 @@ step1df = ( flight_time_raw_df.withColumns({
 )`
 
 ## Use withColumn, expr, and selectExpr to transform DataFrames.r
-
-    - ` flight_time_df12 = (flight_time_df.withColumnRenamed("fl_date","dep_date")
+- ` flight_time_df12 = (flight_time_df.withColumnRenamed("fl_date","dep_date")
 .withColumn("arr_date", to_date(col("dep_date") + col("dep_time") + col("wheels_on") + col("taxi_in")))
 .withColumns({"crs_dep_date": col("dep_date") + col("crs_dep_time"),
 "dep_time": col("dep_date") + col("dep_time"),
