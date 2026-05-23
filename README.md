@@ -94,6 +94,8 @@ step1df = ( flight_time_raw_df.withColumns({
     "crs_arr_time": expr("arr_date + crs_arr_time"),
     "arr_time": expr("arr_date + arr_time"),})
 )`
+
+- `.withColumn("delayed_arrival",expr("arr_time - crs_arr_time"))`
 ```
 ## Use withColumn, expr, and selectExpr to transform DataFrames.r
 ```
