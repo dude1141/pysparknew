@@ -86,19 +86,22 @@ step1df = ( flight_time_raw_df.withColumns({
   - ` df3 = df3.selectExpr("increment", expr(" case when salary > 300000 then 3000 else salary* 10/100 end").withCoumn("salary", expr("increment+salary"))`
 
 ## withColumn using col and Expr
+```
 - ` flight_time_df1 = (flight_time_df.withColumnRenamed("fl_date","dep_date")
-.withColumn("arr_date",expr("to_date(dep_date + dep_time + wheels_on + taxi_in) as arr_date"))
-.withColumns({"crs_dep_date": expr("dep_date + crs_dep_time"),
-"dep_time": expr("dep_date + dep_time"),
-"crs_arr_time": expr("arr_date + crs_arr_time"),
-"arr_time": expr("arr_date + arr_time"),})
+    .withColumn("arr_date",expr("to_date(dep_date + dep_time + wheels_on + taxi_in) as arr_date"))
+    .withColumns({"crs_dep_date": expr("dep_date + crs_dep_time"),
+    "dep_time": expr("dep_date + dep_time"),
+    "crs_arr_time": expr("arr_date + crs_arr_time"),
+    "arr_time": expr("arr_date + arr_time"),})
 )`
-
+```
 ## Use withColumn, expr, and selectExpr to transform DataFrames.r
+```
 - ` flight_time_df12 = (flight_time_df.withColumnRenamed("fl_date","dep_date")
-.withColumn("arr_date", to_date(col("dep_date") + col("dep_time") + col("wheels_on") + col("taxi_in")))
-.withColumns({"crs_dep_date": col("dep_date") + col("crs_dep_time"),
-"dep_time": col("dep_date") + col("dep_time"),
-"crs_arr_time": col("arr_date") + col("crs_arr_time"),
-"arr_time": col("arr_date") + col("arr_time")})
+    .withColumn("arr_date", to_date(col("dep_date") + col("dep_time") + col("wheels_on") + col("taxi_in")))
+    .withColumns({"crs_dep_date": col("dep_date") + col("crs_dep_time"),
+    "dep_time": col("dep_date") + col("dep_time"),
+    "crs_arr_time": col("arr_date") + col("crs_arr_time"),
+    "arr_time": col("arr_date") + col("arr_time")})
 )`
+```
