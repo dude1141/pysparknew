@@ -1,0 +1,6 @@
+student_id,name,course,marks,email
+1,karthik,spark,85,karthik@gmail.com
+2,ravi,python,40,ravi@yahoo.com
+3,anil,aws,75,anil@gmail.com
+4,sai,sql,30,sai@hotmail.com
+5,kiran,azure,90,kiran@gmail.com

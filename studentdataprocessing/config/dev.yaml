@@ -1,0 +1,38 @@
+Pipeline:
+  name: employee_data_pipeline
+  environment: dev
+
+source:
+  file_path: C:/Users/mouni/PycharmProjects/studentdataprocessing/data/studentdata.csv
+  format: csv
+  header: true
+  inferSchema: true
+
+transformations:
+  dropDuplicates: true
+
+  upper_case_columns:
+    - name
+
+  lowercase_columns:
+    - name
+
+  filter_marks:
+    marks : 50
+
+  startswith:
+    column: course
+    value: s
+
+  endswith:
+    column: email
+    value: gmail.com
+
+target:
+  outputpath: C:/Users/mouni/PycharmProjects/studentdataprocessing/data/output
+  format: csv
+  mode: overwrite
+  header: true
+
+
+
