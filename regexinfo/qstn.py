@@ -137,7 +137,7 @@ data1 = [
 
 df_orders = spark.createDataFrame(data1, schema=schema2)
 
-df_orders.show(truncate = False)
+# df_orders.show(truncate = False)
 # /*
 # Problem: You have a DataFrame user_logins with columns: login_id, user_id, login_timestamp,
 # activity_type, and session_duration.
@@ -160,8 +160,47 @@ def extractfun1(df_orders):
 
 try:
     df_logins =extractfun1(df_orders)
-    df_logins.show(truncate=False)
+    # df_logins.show(truncate=False)
 except Exception as e:
     print("e...",e)
 
 
+schema2 = StructType([
+    StructField("transaction_id",   StringType(),  False),
+    StructField("customer_id",      StringType(),  True),
+    StructField("transaction_date", DateType(),    True),
+    StructField("amount_spent",     IntegerType(), True),
+    StructField("transaction_type", StringType(),  True),
+    StructField("category",         StringType(),  True),
+])
+
+data3 = [
+    ("T001", "C001", date(2024, 12,  1), 250, "refund",   "electronics"),
+    ("T002", "C002", date(2024, 12,  2), 100, "purchase", "clothing"),
+    ("T003", "C001", date(2024, 12,  5), 300, "refund",   "electronics"),
+]
+
+df_trans = spark.createDataFrame(data3, schema=schema2)
+df_trans.show(truncate=False)
+df_trans.printSchema()
+
+# Use date_format to extract the week number from transaction_date.
+#  Extract the transaction category from category using split.
+#  Filter out transactions where amount_spent exceeds 200 and transaction_type is "refund".
+
+
+def extractfun14(df_trans):
+    df_trans = df_trans.withColumn("dayofweeks", sf.dayofweek(col("transaction_date")))
+    df_trans = df_trans.withColumn("category_extrac",split(col("category"), "_").getItem(0))
+    df_trans = df_trans.filter((col("amount_spent") > 200 ) & (col("transaction_type")=='refund' ))
+
+    df_trans = df_trans.groupBy("customer_id","dayofweeks").agg(sf.sum(col("amount_spent")).alias("total_amount_spent"),
+     sf.countDistinct(col("transaction_id")).alias("distinct_transactions")).dropDuplicates()
+
+    return df_trans
+
+try:
+    df_logins3 =extractfun14(df_trans)
+    df_logins3.show(truncate=False)
+except Exception as e:
+    print("e...",e)
