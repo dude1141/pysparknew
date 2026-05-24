@@ -2,7 +2,7 @@ from datetime import date
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, coalesce, when, avg, split, count, length
-from pyspark.sql.types import StructType, StructField, StringType, DateType, TimestampType, datetime
+from pyspark.sql.types import StructType, StructField, StringType, DateType, TimestampType, datetime, IntegerType
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, coalesce
@@ -13,7 +13,7 @@ from pyspark.sql import functions as F
 data1= [(1,"kiran",26),(3,"ally",76),(4,"tomrhy",44)]
 schema= ["id","name","age"]
 df= spark.createDataFrame(data1,schema)
-df.show()
+# df.show()
 
 
 transactions = (
@@ -115,6 +115,53 @@ def extractfun1(df21):
 
 try:
     df21 =extractfun1(df21)
-    df21.show(truncate=False)
+    # df21.show(truncate=False)
 except Exception as e:
     print("e...",e)
+
+
+schema2 = StructType([
+    StructField("order_id",       StringType(),  False),
+    StructField("order_date",     DateType(),    True),
+    StructField("delivery_date",  DateType(),    True),
+    StructField("product_id",     StringType(),  True),
+    StructField("quantity",       IntegerType(), True),
+    StructField("price_per_unit", IntegerType(), True),
+])
+
+data1 = [
+    ("O001", date(2024, 12,  1), date(2024, 12, 10), "P001", 10, 15),
+    ("O002", date(2024, 12,  2), date(2024, 12,  8), "P002",  5, 20),
+    ("O003", date(2024, 12,  5), date(2024, 12, 15), "P003",  8, 25),
+]
+
+df_orders = spark.createDataFrame(data1, schema=schema2)
+
+df_orders.show(truncate = False)
+# /*
+# Problem: You have a DataFrame user_logins with columns: login_id, user_id, login_timestamp,
+# activity_type, and session_duration.
+# Use date_format to extract the month and day of the week from login_timestamp.
+# Extract the hour of the day from login_timestamp using hour.
+# Filter logins where activity_type contains "purchase" and session_duration exceeds 1 hour.
+# Group by user_id and day_of_week and calculate:
+# The total session_duration per user per day of the week.
+# The count of logins per user per day of the week.
+# */
+from pyspark.sql import functions as sf
+def extractfun1(df_orders):
+    df_orders = df_orders.withColumn("extratMonthyear", sf.date_format('order_date', 'MM-yyyy'))
+    df_orders = df_orders.withColumn("extractYear", sf.date_format('order_date', 'yyyy'))
+    df_orders = df_orders.filter(sf.datediff(col('delivery_date'), col('order_date'))> 5)
+    df_orders = df_orders.groupBy("extratMonthyear").agg(sf.sum(col("quantity")).alias("totalqty"),
+     sf.sum(col("quantity")*col("price_per_unit")).alias("total_revenue")).dropDuplicates()
+
+    return df_orders
+
+try:
+    df_logins =extractfun1(df_orders)
+    df_logins.show(truncate=False)
+except Exception as e:
+    print("e...",e)
+
+
