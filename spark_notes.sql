@@ -446,5 +446,238 @@ id name 	salary lead(salary,1)
 3   vijay    31           25
 4    veena   25            null
 
+members_df = (
+spark.table("dev.spark_db.members") .filter(col("last_name")=="GUEST")
+)
 
+bookings_df = (
+    spark.table("dev.spark_db.bookings") 
+
+)
+
+facilities_df = spark.table("dev.spark_db.facilities").alias("f")
+
+..
+
+
+Grouop by and window:
+
+multicolumn Aggreagations:
+	1) groupBy aggregations  foreg: max salary department both...
+	2)  window by aggreagations 
+	
+	select aggregated , non-aggregated cols from tables group by non-aggregated columns ; combination needs groupBy
+	
+	select aggregated cols from tables; dont need groupby
+	
+	select non-aggregated cols from table ; dont need groupby
+	
+
+df.groupBy(dept).agg(max("salary"))
+
+id dept salary
+1  chem  45
+2  chem  60
+3  pharm  30
+
+df21 = df13.groupBy(col("city")).agg(min(col("Temperature")),max(col("Temperature")), avg(col("Temperature")))
+
+
+window aggreagations:
+
+	productid productname sales date 
+	123        maggi        300  26thmay
+	123		   maggi		300  26thmay
+	123		   maggi		400  27thmay
+	
+get sales of last week:
+	sum--oneweek limitaiont window
+	
+
+id dept salary
+1  chem  45
+2  chem  60
+3  pharm  30
+4  pharm  66
+
+get max salry each department
+
+		df13.groupBy(col("dept")).agg(min(col("Temperature")),max(col("Temperature")), avg(col("Temperature")))
+
+
+
+1) rows between unbounded proceeding and  currentrow
+
+id   dept salary cumulativesal
+1	 chem 	
+2    chem 
+3    pharma
+4
+
+
+
+
+1------1 feet  ---unboundepreceeding is first row
+2--------1+2=3 feet
+3------1+2+3=6 feet
+rows between unbounded preceeding and current row 
+
+
+rows between unboundepreceeding is first row
+current row= where 
+
+
+syntax:
+	
+	
+	Windows=Window.partitionBy("..").orderBy(desc(col("colname"))).rowsBetween(Window.unboundedPreceedding,currentRow)
+	
+	
+	result= df.select(col,col2,col3....sum(col("salary")).over(Windows)
+	
+	windows get executed row byrow
+	
+	
+	a= window.orderBy("id").rowsbetween(window.UnboundedPreceeding ,Window.currentRow)
+	
+	
+	running sum 
+	
+	moving sum
+	
+	cumulative sum 
+	
+	calcluate the avg rating of each user based on last 3 ratings
+	
+	
+what ever you give it does rowby row and starts from first columns
+
+scoreData1 = [
+ (1,"Movie1",  4.5),  -2 where ever you stand you need last 3 ratings  4.5
+ (1,"Movie2",  4.0),      4.5+4.0/2 =4.25
+ (1,"Movie3",  2.5),      4.5+4.0+2.5/3= 
+ (2,"Movie1",  4.0),   4.0 
+ (2,"Movie2",  4.1),    4.0+4.1/2=
+ (2,"Movie3",  4.6),   4.0+4.1+4.6/3=
+(2,"Movie6",  3.0),
+(2,"Movie7",  3.8)
+
+rowsbetween(-2,0) ---> 2 previous rows + current row
+
+
+
+
+
+
+So for each user:
+current rating
+previous rating
+previous previous rating
+
+That gives the last 3 ratings including the current rating.
+
+
+you need last 3 ratings ,where ever you are from there last 3 ratings.
+
+rowsbetween(0,2) ---first three ratings
+
+
+space remoives
+ltrim
+rtrim
+trim
+
+
+renaming columns using withcolumnRename(col,newcolname)
+
+and using toDF to rename multiple columns
+
+
+df ---id name age
+
+df.toDF("studentid,"studentname",studentage")
+
+
+CAST:
+col("name").cast("string")
+
+looping 
+
+from pyspark.sql.functions import upper, col
+df2= spark.createDataFrame(data,columns)
+df2.show()
+columnlist =["name","city","country"]
+
+def uppers(df):
+    for i in columnlist:
+        df = df.withColumn(i, upper(col(i)))
+        return df
+
+df3=uppers(df2).show()
+
+
+
+handling nulls:
+
+	filter 
+	
+	Na functions for filling nulls:
+		
+	na.fill
+	na.drop
+	
+	id name age 
+	1  mohan null 
+	null veer 86
+	3 	null 36
+	
+	df.na.fill("na")
+	
+	id name age 
+	1  mohan na 
+	na veer 86
+	3 	na 36
+	
+	df.na.fill(subset=[colname,value="na"])
+	df.na.drop
+	
+	
+	
+	drop duiplicates
+	
+	
+	using distinct  df.distinct
+	
+	dropduplicates   df.dropDuplicates(colnamae)
+	
+	dropping using window at production level
+		
+	
+	Padding:
+	
+	LPAD, RPAD..
+	
+	colname karthik
+	lpad(colname,15,'*')
+	
+	*********karthik
+	
+	
+	date:
+	string fromat related date col --"2025-01-01"
+	
+	best way use to_date(col("string fromat related date col"))
+	
+	then format like yyyy mm dd or dd mm yyyy 
+	
+	
+	to_timestamp(col("15:30:00")) converts string to timestamp
+	
+	
+	withcolumn("daysdiff",date_add())
+	
+	
+	
+	df.withColumn("date1",coalesce("date1",lit("2026-03-01")))
+	
 
