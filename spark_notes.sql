@@ -681,3 +681,49 @@ handling nulls:
 	df.withColumn("date1",coalesce("date1",lit("2026-03-01")))
 	
 
+  
+	
+	SCD types:  source and target left anti join we get records which are newly arrived
+		right	id name 	age 
+				1   mohan	56 
+				2	veer    45
+				3	meena   37   
+	
+	
+		left	id name 	age
+				1	mohan 	56
+				2	veer	34
+				4	A		34
+				5	B		26
+			
+		left anti we get 4 and 5 records:
+
+		target.join(source("id") === target("id"),"leftanti")
+		
+		
+	
+	``` incremental load ```
+
+					:  1) last proceesed typed  ="2026-06-06 12:00:00"
+					   
+					   df.filter( timestamp(this is the column in table source) > col("last proceessed"))
+					   
+					   we want to know which record added or changed and timestamp.
+					   		   				   
+					   
+					   2)  Schema drift mechanism (shema evolution)
+					   
+					   df........  id name age
+					   
+					   customer_2026-06-05.csv  id name age 
+					   customer_2026-06-06.csv 	id name age details
+					   customer_2026-06-08.csv  id 
+					   
+					   		
+						3) a) union does not check datatype
+							 union is to just union the data( where two datasets equal number of columns)..it will not handle datatype related usecases
+							 
+					     -->  if we union two dataframes which are parqueyt format
+
+							
+					4) folder has two parquet files one has 3 col and other has 4 columsn
