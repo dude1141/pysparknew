@@ -1,0 +1,26 @@
+Pipeline:
+  name: employee_data_pipeline
+  environment: dev
+
+source:
+  file_path: C:/Users/mouni/PycharmProjects/PythonProject34/data/customerdata.csv
+  format: csv
+  header: true
+  inferSchema: true
+
+transformations:
+  dropDuplicates: true
+  column_mapping:
+    cust_id : customer_id
+    cust_name : customer_name
+    cust_age : customer_age
+
+
+target:
+  outputpath: C:/Users/mouni/PycharmProjects/PythonProject34/data/output
+  format: csv
+  mode: overwrite
+  header: true
+
+
+
